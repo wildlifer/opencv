@@ -1,0 +1,21 @@
+10
+4
+100
+6
+10
+100
+-100
+0.5
+0.9
+7
+
+choice of method
+maximum no. of iterations
+Output refresh cycle
+No. of parameters D
+No. of parents NP
+Upper bound of parameter values
+Lower bound of parameters values
+Constant F
+Crossing Over factor CR
+seed for pseudo random number generator

@@ -1,0 +1,7 @@
+Car - 1
+SUV - 0
+Pick Up - 0
+Truck - 0
+Truck 1 - 0
+Truck 2 - 0
+Truck 3 - 1
