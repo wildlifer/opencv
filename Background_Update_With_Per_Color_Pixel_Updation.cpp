@@ -336,12 +336,11 @@ int main(int argc, char** argv)
 					//pause();
 				}
 				/*********************check for a new vehicle********************/
-
 				no_of_vehicles_in_frame++;	
 			}
 			
 		}//end of for involving contour check
-		if (frame_no > 1000)
+		if (frame_no > 10000)
 			pause();
 		bool stuck = false;
 		/***************check for stuck contour******************/
