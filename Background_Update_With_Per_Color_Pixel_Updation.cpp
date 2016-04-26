@@ -71,10 +71,10 @@ int main(int argc, char** argv)
 		//new frame
 		cap >> nextframe;
 		if (nextframe.empty()) break;
-		if (frame_no < 2000){
-			background = nextframe.clone();
-			continue;
-		}
+		//if (frame_no < 2385){
+			//background = nextframe.clone();
+			//continue;
+		//}
 		
 		//get region of interest
 		if (ROI_ENABLED){
@@ -403,6 +403,7 @@ int main(int argc, char** argv)
 		Scalar value;
 		int pixels_updated = 0;
 		if ((!copy_frame_as_background && !stuck) || vehicle_width > frame_width/2){
+			//cout << "Updating pixels with THRES as " << THRES << endl;
 			for (int i = 0; i < background.cols; i++){
 				for (int j = 0; j < background.rows; j++){
 					//int intensity_diff = abs((int)gray_background.at<uchar>(Point(i, j)) - (int)gray_nextframe.at<uchar>(Point(i, j)));
