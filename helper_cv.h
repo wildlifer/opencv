@@ -25,7 +25,17 @@ const int NO_CONTOUR_FRAME_COUNT = 3;
 const int CONTOUR_STUCK_FRAME_COUNT = 3;
 const int TRAINING_FRAMES = 3;
 const int MAX_VEHICLES_IN_FRAME = 5;
-const int NO_OF_CUES = 6;
+const int NO_OF_CUES = 7;
+/*
+Cue 1 : left x coordinate
+Cue 2: left y coordinate
+Cue 3: width
+Cue 4: height
+Cue 5: right x coordinate
+Cue 6: right y coordinate
+Cue 7: direction (1 for left, 2 for right)
+*/
+const int MERGE_THRES = 5;
 const int MIN_WIDTH_TO_HEIGHT_RATIO = 2;
 const int MAX_WIDTH_TO_HEIGHT_RATIO = 5;
 
@@ -42,7 +52,7 @@ const int MIN_VEHICLE_HEIGHT = 8;
 const int MIN_VEHICLE_WIDTH = 20;
 const double MIN_VEHICLE_AREA = 150;
 const double MIN_DETECTABLE_AREA = 50;
-const int MAX_Y_TOLERANCE = 10;
+const int MAX_Y_TOLERANCE = 15;
 const int MAX_X_TOLERANCE = 10;
 const int ENTRY_EXIT_TOLERANCE = MIN_VEHICLE_WIDTH;
 const int MAX_HEIGHT_TOLERANCE = 5;

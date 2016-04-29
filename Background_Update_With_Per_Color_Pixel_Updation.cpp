@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	//File
 	ofstream outFile;
 	//Video
-	VideoCapture cap("videos/4.5.mp4");
+	VideoCapture cap("videos/5.2.mp4");
 	vector<Mat> training(TRAINING_FRAMES);
 	vector<Mat> no_contour_frame_vec(NO_CONTOUR_FRAME_COUNT);
 	Mat background, gray_background, backup_background;;
@@ -114,26 +114,31 @@ int main(int argc, char** argv)
 		//CV_RETR_EXTERNAL is important here. It helps to find only outer contours which is what we need
 		findContours(src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		double max_area_diff_frame = 0;
+		double max_area_diff_frame = 300;
 		Point p,q;
 		int wid, hi = 0;
 		/***************Check for max area contour and fill the max_area with whites***************/
 		for (int i = 0; i < contours.size(); i++){
+			int a = 0;
 			if (contourArea(contours[i], false) > max_area_diff_frame){
-				max_area_diff_frame = contourArea(contours[i]);
+				//max_area_diff_frame = contourArea(contours[i]);
+				a = 1;
 				boundRec = boundingRect((contours[i]));
 				p.x = boundRec.x;
 				p.y = boundRec.y;
 				q.x = boundRec.x + boundRec.width;
 				q.y = boundRec.y + boundRec.height;
 			}
-		}
-		
-		for (int i = p.x; i < q.x; i++){
-			for (int j= p.y; j < q.y; j++){
-				diff.at<uchar>(Point(i, j)) = 255;
+			if (a == 1){
+				for (int i = p.x; i < q.x; i++){
+					for (int j = p.y; j < q.y; j++){
+						diff.at<uchar>(Point(i, j)) = 255;
+					}
+				}
 			}
 		}
+		
+		
 		//imshow("Diff Frame After updation", diff);
 		imshow("Diff Frame", diff);
 		//cvWaitKey(30);
@@ -149,7 +154,7 @@ int main(int argc, char** argv)
 		//Mat noise_less_frame = src.clone();
 
 		vector<Rect> boundRect(contours.size());
-		Point pt1, pt2, pt3, pt4;
+		//Point pt1, pt2;
 		int vehicle_width, vehicle_height;
 		double max_area = 0;
 		Point max_area_point;
@@ -157,11 +162,37 @@ int main(int argc, char** argv)
 		no_of_vehicles_in_frame = 0;
 		bool copy_frame_as_background = true;
 		bool check_for_min_contour = true;
+		bool possible_merge = false;
+
+		/********Check for possible merge of vehicles*******/
+		for (int i = 0; i < vehicles-1; i++){
+			/*cout << "vehicles_detected[i][4]= " << vehicles_detected[i][4] << endl;
+			cout << "vehicles_detected[i+1][0]= " << vehicles_detected[i + 1][0] << endl;
+			cout << "vehicles_detected[i][0]= " << vehicles_detected[i][0] << endl;
+			cout << "vehicles_detected[i+1][4]= " << vehicles_detected[i + 1][4] << endl;
+			*/
+			if (abs(vehicles_detected[i][4] - vehicles_detected[i+1][0]) < MERGE_THRES){
+				cout << "vehicles_detected[i][4]= " << vehicles_detected[i][4]<< endl;
+				cout << "vehicles_detected[i+1][0]= " << vehicles_detected[i+1][0] << endl;
+				possible_merge = true;
+			}
+			else if (abs(vehicles_detected[i][0] - vehicles_detected[i+1][4]) < MERGE_THRES){
+				cout << "vehicles_detected[i][0]= " << vehicles_detected[i][0] << endl;
+				cout << "vehicles_detected[i+1][4]= " << vehicles_detected[i + 1][4] << endl;
+				possible_merge = true;
+			}
+		}
+		/********Check for possible merge of vehicles*******/
+
+		if (possible_merge){
+			cout << "################Possible MERGE ahead###################" << endl;
+			pause();
+		}
 		
 		//cout << "No of contours are :" << contours.size() << endl;
 		/**************Contour check**************/
 		for (int i = 0; i < contours.size(); i++){
-			Point pt1, pt2;
+			Point pt1, pt2, pt3, pt4;
 			boundRect[i] = boundingRect(Mat(contours[i]));
 			pt1.x = boundRect[i].x;
 			pt1.y = boundRect[i].y;
@@ -214,7 +245,6 @@ int main(int argc, char** argv)
 						//vehicles++;
 			//		}
 				//}
-				
 				/****Find number of vechicles already detected*********/
 
 				/*check if the vehicle has already been detected*/
@@ -222,15 +252,16 @@ int main(int argc, char** argv)
 				for (int i = 0; i < MAX_VEHICLES_IN_FRAME; i++){
 
 					if ( (((abs(vehicles_detected[i][1] - pt1.y)  < MAX_Y_TOLERANCE) &&
-						 (abs(vehicles_detected[i][3] - vehicle_height) < MAX_Y_TOLERANCE))
-						||//1
+						 (abs(vehicles_detected[i][3] - vehicle_height) < MAX_Y_TOLERANCE)) //1:Check for similar height and y coordinates
+						||//else check for similar width and height
 						 ((abs(vehicles_detected[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
 						  (abs(vehicles_detected[i][3] - vehicle_height) < MAX_Y_TOLERANCE))	
-						||
+						||//else check for width and y coordinates
 						 ((abs(vehicles_detected[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
 						 (abs(vehicles_detected[i][1] - pt1.y) < MAX_Y_TOLERANCE))) 
-						&&//2
-						(abs(vehicles_detected[i][0] - pt1.x) < (vehicle_width + MAX_X_TOLERANCE))
+						&&//2:Check for 
+						//(abs(vehicles_detected[i][0] - pt1.x) < (vehicle_width + MAX_X_TOLERANCE))
+						(abs(vehicles_detected[i][0] - pt1.x) < (MAX_X_TOLERANCE+20))//Newly added
 					   )
 					{
 						vec_check = true;
@@ -243,10 +274,14 @@ int main(int argc, char** argv)
 						cout << "*****************************************************" << endl;*/
 						
 						/*Find the direction of the vehicle*/
-						if (vehicles_detected[i][0] <= pt1.x){
-							cout << "Vehicle travelling RIGHT >>>>>>>>>>>>>>>" << endl;
+						if (pt1.x >= vehicles_detected[i][0] && pt2.x >= vehicles_detected[i][4]){
+							
+							cout << "Vehicle travelling RIGHT >>>>>>>>>>>>>>> at " << pt1.x << ","<< pt2.x<< endl;
+							/*Direction update*/
+							vehicles_detected[i][6] = 2;
+							/*Exit check*/
 							if (pt2.x > (frame_width - (5)) && pt2.x < frame_width){
-								cout << ">>>>>>>>>>Vehicle Exiting RIGHT<<<<<<<<<<<<" << endl;
+								cout << ">>>>>>>>>>Vehicle Exiting RIGHT>>>>>>>>>>" << endl;
 								/*Now remove vehicle from the memory*/
 								for (int j = 0; j < NO_OF_CUES; j++){
 									vehicles_detected[i][j] = 0;
@@ -257,10 +292,18 @@ int main(int argc, char** argv)
 								//pause();
 							}
 						}
-						else if (vehicles_detected[i][0] >= pt1.x){
-							cout << "Vehicle travelling LEFT <<<<<<<<<<<<<<<<<<" << endl;
+						else if (pt1.x <= vehicles_detected[i][0] && pt2.x <= vehicles_detected[i][4]){
+						/*	cout << "pt1.x = " << pt1.x << endl;
+							cout << "vehicles_detected[i][0] = " << vehicles_detected[i][0] << endl;
+							cout << "pt2.x = " << pt2.x << endl;
+							cout << "vehicles_detected[i][4] = " << vehicles_detected[i][4] << endl;
+							*/
+							cout << "Vehicle travelling LEFT <<<<<<<<<<<<<<<<<<at " << pt1.x << "," << pt2.x << endl;
+							/*Direction update*/
+							vehicles_detected[i][6] = 1;
+							/*Exit check*/
 							if (pt1.x > 0 && pt1.x < 5){
-								cout << ">>>>>>>>>>Vehicle Exiting LEFT<<<<<<<<<<<<" << endl;
+								cout << "<<<<<<<<<<<Vehicle Exiting LEFT<<<<<<<<<<<<" << endl;
 								/*Now remove vehicle from the memory*/
 								for (int j = 0; j < NO_OF_CUES; j++){
 									vehicles_detected[i][j] = 0;
@@ -271,8 +314,9 @@ int main(int argc, char** argv)
 								//pause();
 							}
 						}
-						//update the x-coordinate
+						//update the x1 and x2 coordinates of the vehicle
 						vehicles_detected[i][0] = pt1.x;
+						vehicles_detected[i][4] = pt2.x;
 						
 						//pause();
 						break;
@@ -290,7 +334,7 @@ int main(int argc, char** argv)
 				}//end of for
 
 				/*********************check for a new vehicle********************/
-				if (!vec_check && pt1.x > 2 * MIN_VEHICLE_WIDTH && pt1.x < (frame_width - 3*MIN_VEHICLE_WIDTH) &&
+				if (!possible_merge && !vec_check && pt1.x > 2 * MIN_VEHICLE_WIDTH && pt1.x < (frame_width - 3 * MIN_VEHICLE_WIDTH) &&
 					pt2.x < (frame_width - 3*MIN_VEHICLE_WIDTH) )
 				{
 					/*Mat a = unblur_gray_nextframe(Rect(pt1.x, pt1.y, vehicle_width, vehicle_height + 5));
@@ -329,6 +373,14 @@ int main(int argc, char** argv)
 							break;
 						}
 					}
+
+					cout << "~~~~~~~~~~Vehicles currently in memory are : " << endl;
+					for (int i = 0; i < vehicles; i++){
+						cout << "----------------------- " << i + 1 << "-------------------"<<endl;
+						cout << "(x1,y1) -> " << vehicles_detected[i][0] << "," << vehicles_detected[i][1] << endl;
+						cout << "(x2,y2) -> " << vehicles_detected[i][4] << "," << vehicles_detected[i][5] << endl;
+						cout << "Width = " << vehicles_detected[i][2] << " Height = " << vehicles_detected[i][3] << endl;
+					}
 					//put or append the vehicle parameters in memory
 					vehicles_detected[empty_slot][0] = pt1.x;
 					vehicles_detected[empty_slot][1] = pt1.y;
@@ -337,16 +389,16 @@ int main(int argc, char** argv)
 					vehicles_detected[empty_slot][4] = pt2.x;
 					vehicles_detected[empty_slot][5] = pt2.y;
 
-					cout << "~~~~~~~~~~Vehicles currently in memory are : " << ++vehicles << endl;
-					//pause();
+					cout << "~~~~~~~~~~Vehicles currently in memory uodated to : " << ++vehicles << endl;
+					pause();
 				}
 				/*********************check for a new vehicle********************/
 				no_of_vehicles_in_frame++;	
 			}
 			
 		}//end of for involving contour check
-		if (frame_no % 2000==0)
-			pause();
+		//if (frame_no % 2000==0)
+		//	pause();
 		bool stuck = false;
 		/***************check for stuck contour******************/
 		if (stuck_frame_count != CONTOUR_STUCK_FRAME_COUNT){
@@ -426,7 +478,14 @@ int main(int argc, char** argv)
 				}//end of inner for
 			}//end of outer for
 		}
-
+		if (no_contour_frame == 2){
+			for (int i = 0; i < MAX_VEHICLES_IN_FRAME; i++){
+				for (int j = 0; j < NO_OF_CUES; j++){
+					vehicles_detected[i][j] = 0;
+				}
+			}
+			vehicles = 0;
+		}
 		/*Background cleaning strategy 1: If no contours are reported for a 
 		  continuous NO_CONTOUR_FRAME_COUNT then set the current frame as the background frame*/
 		if (no_contour_frame == NO_CONTOUR_FRAME_COUNT){
@@ -444,6 +503,7 @@ int main(int argc, char** argv)
 					vehicles_detected[i][j] = 0;
 				}
 			}
+			vehicles = 0;
 			no_contour_frame = 0;
 		}
 		else{
