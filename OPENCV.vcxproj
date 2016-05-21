@@ -159,7 +159,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Background_Update_With_Per_Color_Pixel_Updation.cpp" />
+    <ClCompile Include="Classifier_Redo.cpp" />
     <ClCompile Include="CostFunction.cpp" />
     <ClCompile Include="de36.cpp" />
     <ClCompile Include="helper.cpp" />
