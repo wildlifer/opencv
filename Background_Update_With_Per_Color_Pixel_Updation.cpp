@@ -20,13 +20,16 @@ int main(int argc, char** argv)
 	Mat nextframe, gray_nextframe;
 	Mat diff_frame;
 	outFile.open("data/VehicleCassifier/changeInMetric.txt", 'w');
-
+	cap >> background;
+	cap >> background;
 	for (int i = 0; i < TRAINING_FRAMES; i++){
 		cap >> background;
 		training[i]=background.clone();
 	}
 
-	int THRES = getBackgroundThreshold(training);
+	double THRES = getBackgroundThreshold(training);
+	outFile << std::fixed << std::setprecision(2) << THRES; outFile << endl;
+
 	//Canny parameters
 	Mat canny_output;
 	int thresh = 50;
@@ -138,7 +141,7 @@ int main(int argc, char** argv)
 			}
 		}
 		
-		
+	
 		//imshow("Diff Frame After updation", diff);
 		imshow("Diff Frame", diff);
 		//cvWaitKey(30);
@@ -337,18 +340,18 @@ int main(int argc, char** argv)
 				if (!possible_merge && !vec_check && pt1.x > 2 * MIN_VEHICLE_WIDTH && pt1.x < (frame_width - 3 * MIN_VEHICLE_WIDTH) &&
 					pt2.x < (frame_width - 3*MIN_VEHICLE_WIDTH) )
 				{
-					/*Mat a = unblur_gray_nextframe(Rect(pt1.x, pt1.y, vehicle_width, vehicle_height + 5));
-					Mat detected_edges;
+					Mat a = unblur_gray_nextframe(Rect(pt1.x, pt1.y, vehicle_width, vehicle_height + 5));
+					/*Mat detected_edges;
 					Canny(a, detected_edges, 1, 3, 3);
 					Mat dst;// = Scalar::all(0);
 					a.copyTo(dst, detected_edges);
-					imshow("Edges", detected_edges);
+					imshow("Edges", detected_edges);*/
 
 					bool circle_found = checkCircles(a);
 					if (circle_found){
 						cout << "-----------------Circle found------------------" << endl;
 						pause();
-					}*/
+					}
 					/*Increment total vehicle count*/
 					total_vechicles++;
 					/*Increment total vehicle count*/
@@ -490,6 +493,8 @@ int main(int argc, char** argv)
 		  continuous NO_CONTOUR_FRAME_COUNT then set the current frame as the background frame*/
 		if (no_contour_frame == NO_CONTOUR_FRAME_COUNT){
 			THRES = getBackgroundThreshold(no_contour_frame_vec);
+			outFile << THRES; outFile << endl;
+			
 			if (THRES < MIN_RGB_DIFFERENCE){
 				THRES = MIN_RGB_DIFFERENCE;
 				//cout << "Updating Threshold to MIN_RGB_DIFFERENCE as " << THRES << endl;
@@ -537,6 +542,7 @@ int main(int argc, char** argv)
 	cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	cout << "Total vehicles detected in the video      " << total_vechicles << endl;
 	cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+	outFile.close();
 	pause();
 	return 0;
 }//end of main

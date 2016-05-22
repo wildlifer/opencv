@@ -5,7 +5,7 @@ void pause(){
 	cin.clear();
 	cin.ignore(INT_MAX, '\n');
 }
-int getBackgroundThreshold(vector<Mat> seq){
+double getBackgroundThreshold(vector<Mat> seq){
 	double thres = 0;
 	vector<double> diffs(seq.size() - 1);
 	int total_diff = 0;
@@ -34,6 +34,8 @@ int getBackgroundThreshold(vector<Mat> seq){
 	
 	thres = mean(diffs);
 	double dev = stdev(thres,diffs);
+	cout << "Threshold is ---- " << (thres + dev) << endl;
+	//pause();
 	return (thres+dev);
 }
 double stdev(double mean, vector<double> arr){

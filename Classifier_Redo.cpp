@@ -67,7 +67,6 @@ int main(int argc, char** argv)
 
 	while (1) {
 		frame_no++;
-
 		//new frame
 		cap >> nextframe;
 		if (nextframe.empty()) break;
@@ -107,8 +106,21 @@ int main(int argc, char** argv)
 		vector<Vec4i> hierarchy;
 		findContours(src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 		Mat noise_less_frame = drawContoursNDeNoise2(diff, contours, MIN_DETECTABLE_AREA);
-		//createNMoveWindow("Noise Less", max_cols, max_rows, noise_less_frame, ORIGIN + SHIFT, 350);
-		//cvWaitKey(30);
+		createNMoveWindow("Noise Less", max_cols, max_rows, noise_less_frame, ORIGIN + SHIFT, 350);
+		cvWaitKey(30);
+		findContours(noise_less_frame, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		src = noise_less_frame.clone();
+		//findContours(src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		vector<Rect> boundRect(contours.size());
+		Point pt1, pt2;
+		//cout << "No of contours found: " << contours.size() << endl;
+		double max_area = 0;
+		for (int i = 0; i < contours.size(); i++){
+			if (contourArea(contours[i], false)>max_area){
+				max_area = contourArea(contours[i]);
+				boundRec = boundingRect((contours[i]));
+			}
+		}
 		imshow("Diff Frame", diff);
 		
 		/***********Background update starts here************/

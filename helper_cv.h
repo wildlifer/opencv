@@ -23,7 +23,7 @@ const int MIN_VEHICLE_IDENTIFIABLE_DIFFERENCE = 120;
 const int PAUSE_AFTER_FRAMES = 100;
 const int NO_CONTOUR_FRAME_COUNT = 3;
 const int CONTOUR_STUCK_FRAME_COUNT = 3;
-const int TRAINING_FRAMES = 3;
+const int TRAINING_FRAMES = 5;
 const int MAX_VEHICLES_IN_FRAME = 5;
 const int NO_OF_CUES = 7;
 /*
@@ -59,14 +59,16 @@ const int MAX_HEIGHT_TOLERANCE = 5;
 const int MAX_WIDTH_TOLERANCE = 5;
 
 //Circle detection parameters
-const int cannyThresholdInitialValue = 1;
+const int cannyThresholdInitialValue = 200;
 const int accumulatorThresholdInitialValue = 12;
+const int inverseResolutionInitialValue = 1;
+const int minRadius = 5;
+const int maxRadius = 10;
+
 const int maxAccumulatorThreshold = 400;
 const int maxCannyThreshold = 255;
-const int inverseResolutionInitialValue = 2;
 const int maxInverseResolution = 3;
-const int minRadius = 3;
-const int maxRadius = 10;
+
 
 
 const int MAX_CONTOURS = 10;
@@ -94,7 +96,7 @@ const double B_WEIGHT = 0.34;
 
 void pause();
 int getBackgroundThreshold(VideoCapture cap, int limit);
-int getBackgroundThreshold(vector<Mat>);
+double getBackgroundThreshold(vector<Mat>);
 int getThrs(vector<int>);
 void createNMoveWindow(char name[], int width, int height, Mat data, int x, int y);
 vector<Mat> getNormalizedHist(Mat frame, int histSize, float range[], bool uniform, bool accumulate);
