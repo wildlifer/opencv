@@ -1,4 +1,6 @@
 #include "helper_cv.h"
+String readbase = "images/2016Journal/";
+String writebase = "images/2016Journal/";
 void pause(){
 	int xx;
 	cin >> xx;
@@ -488,30 +490,112 @@ bool HoughDetection(const Mat& src_gray, const Mat& src_display, int cannyThresh
 	// runs the actual detection
 	HoughCircles(src_gray, circles, CV_HOUGH_GRADIENT, inverseResolution, src_gray.rows / 3, cannyThreshold, accumulatorThreshold, min, max);
 
-//	imshow("Circles1", src_gray);
-	//cvWaitKey(30);
 	if (circles.size() <= 0){
 		cout << "No circles found" << endl;
 		return false;
 	}
-	/// Apply the Hough Transform to find the circles
-	//HoughCircles(src_gray, circles, CV_HOUGH_GRADIENT, 1.98, src_gray.rows / 5, 250, 50, 0, 30);
+	cout << circles.size() << " circles found" << endl;
+	// shows the results
+	drawCircles(src_display, circles, "Circles", ORIGIN, ORIGIN);
+	circles = GetAlignedCenters(circles);
+	//Call DE module
+	OptimizeDE(src_display, src_gray, circles, "in.txt", "out.txt", "", 1);
+	//drawCircles(src_display, circles, "Aligned Circles", ORIGIN , src_display.rows+300);
+	cvWaitKey(30);
+	return true;
+}
+void OptimizeDE(Mat src, Mat src_gray, vector<Vec3f> circles, char infile[], char outfile[], String file, int imageNo){
+	//vector<String> strategies = { "DEBest1Bin", "DERand1Bin", "DERandToBest1Bin", "DEBest2Bin", "DERand2Bin" };
+	vector<String> strategies = { "DEBest1Bin" };
+	String outFile = writebase + "/out.txt";
+	char *out = (char*)outFile.c_str();
+	//memcpy(outfile,outFile.c_str(),outFile.size());
 
-	// clone the colour, input image for displaying purposes
+	cout << "Entering DE " << endl;
+	pause();
+	for (int i = 0; i < strategies.size(); i++){
+		vector<Vec3f> deCircles = DE(src, src_gray, circles, infile, out, i + 6, strategies.size(), imageNo);
+		//ShowCircles("Detected by DE", deCircles, src, strategies[i], file);
+		drawCircles(src, deCircles, "Detected by DE",ORIGIN,ORIGIN+SHIFT);
+	}
+	//cvWaitKey(0);
+}
+void drawCircles(Mat src_display, std::vector<Vec3f> circles, char* name, int x, int y){
 	Mat display = src_display.clone();
 	for (size_t i = 0; i < circles.size(); i++)
 	{
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 		int radius = cvRound(circles[i][2]);
 		// circle center
-		circle(display, center, 1, Scalar(255, 255, 0), -1, 8, 0);
+		circle(display, center, 1, Scalar(0, 0, 0), -1, 8, 0);
 		// circle outline
-		circle(display, center, radius, Scalar(255, 255, 255), 1, 8, 0);
+		circle(display, center, radius, Scalar(255, 255, 255), -1, 8, 0);
 	}
 	cout << circles.size() << " circles found" << endl;
 	// shows the results
-	imshow("Circles", display);
+	//createNMoveWindow("Aligned Circles", display.cols, display.rows, display, ORIGIN, ORIGIN);
+	createNMoveWindow(name, display.cols, display.rows, display, x, y);
+	//imshow("Circles", display);
 	cvWaitKey(30);
-	return true;
 }
+vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles){
+	const int noOfCircles = circles.size();
+	int noOfFinalCircles = 0;
+	int **adjacency = new int*[noOfCircles];
+	for (int i = 0; i < noOfCircles; i++)
+		adjacency[i] = new int[noOfCircles];
+
+	//Discard the falsely detected circles
+	int* adjacencySum = new int[noOfCircles];
+	for (int i = 0; i < noOfCircles; i++){
+		adjacencySum[i] = 0;
+	}
+	for (int i = 0; i < noOfCircles; i++){
+		//cout << "Circle No " << i << " with center "<<
+		for (int j = 0; j < noOfCircles; j++){
+			if (i == j){
+				adjacency[i][j] = 1;
+			}
+			else if (abs(cvRound(circles[i][1]) - cvRound(circles[j][1])) < HOUGH_THRESHOLD) {
+				adjacency[i][j] = 1;
+			}
+			else{
+				adjacency[i][j] = 0;
+			}
+			cout << adjacency[i][j] << ",";
+		}
+		cout << endl;
+	}
+	//sum the adjacency matrix
+	for (int i = 0; i< noOfCircles; i++){
+		for (int j = 0; j < noOfCircles; j++){
+			adjacencySum[i] += adjacency[i][j];
+		}
+	}
+	//find the max
+	int max = adjacencySum[0];
+	for (int i = 1; i < noOfCircles; i++){
+		if (adjacencySum[i]>max)
+			max = adjacencySum[i];
+	}
+	int j = 0;
+	for (int i = 0; i < noOfCircles; i++){
+		if (adjacencySum[i] == max){
+			j++;
+		}
+	}
+	vector<Vec3f> newCenters(j);
+	j = 0;
+	
+	for (int i = 0; i < noOfCircles; i++){
+		if (adjacencySum[i] == max){
+			cout << " i is " << i << " and j is " << j << endl;
+			newCenters.at(j) = circles.at(i);
+			j++;
+		}
+	}
+
+	return newCenters;
+}
+
 

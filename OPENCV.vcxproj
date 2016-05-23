@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClCompile Include="Background_Update_With_Per_Color_Pixel_Updation.cpp" />
     <ClCompile Include="CostFunction.cpp" />
-    <ClCompile Include="de36.cpp" />
+    <ClCompile Include="DE.cpp" />
     <ClCompile Include="helper.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -29,13 +29,13 @@
     <ClCompile Include="CostFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="de36.cpp">
+    <ClCompile Include="Background_Update_With_Per_Color_Pixel_Updation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Background_Update_With_Per_Color_Pixel_Updation.cpp">
+    <ClCompile Include="DE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

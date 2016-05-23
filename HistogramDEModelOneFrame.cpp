@@ -111,6 +111,7 @@ void ShowResults(vector<Vec3f> circles, Mat src_display, String file){
 	//imshow("Detected Vehicle", clearedVehicle);
 	//cvMoveWindow("Detected Vehicle", 0, 450);
 }
+
 vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles){
 	const int noOfCircles = circles.size();
 	int noOfFinalCircles = 0;

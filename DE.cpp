@@ -1,32 +1,5 @@
 
-/**H*O*C**************************************************************
-**                                                                  **
-** No.!Version! Date ! Request !    Modification           ! Author **
-** ---+-------+------+---------+---------------------------+------- **
-**  1 + 3.1  +5/18/95+   -     + strategy DE/rand-to-best/1+  Storn **
-**    +      +       +         + included                  +        **
-**  1 + 3.2  +6/06/95+C.Fleiner+ change loops into memcpy  +  Storn **
-**  2 + 3.2  +6/06/95+   -     + update comments           +  Storn **
-**  1 + 3.3  +6/15/95+ K.Price + strategy DE/best/2 incl.  +  Storn **
-**  2 + 3.3  +6/16/95+   -     + comments and beautifying  +  Storn **
-**  3 + 3.3  +7/13/95+   -     + upper and lower bound for +  Storn **
-**    +      +       +         + initialization            +        **
-**  1 + 3.4  +2/12/96+   -     + increased printout prec.  +  Storn **
-**  1 + 3.5  +5/28/96+   -     + strategies revisited      +  Storn **
-**  2 + 3.5  +5/28/96+   -     + strategy DE/rand/2 incl.  +  Storn **
-**  1 + 3.6  +8/06/96+ K.Price + Binomial Crossover added  +  Storn **
-**  2 + 3.6  +9/30/96+ K.Price + cost variance output      +  Storn **
-**  3 + 3.6  +9/30/96+   -     + alternative to ASSIGND    +  Storn **
-**  4 + 3.6  +10/1/96+   -     + variable checking inserted +  Storn **
-**  5 + 3.6  +10/1/96+   -     + strategy indic. improved  +  Storn **
-**                                                                  **
-***H*O*C*E***********************************************************/
-
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv/cv.h";
-#include "opencv/highgui.h"
-# include "de.h"
+#include "helper_cv.h"
 #include <algorithm>
 
 using namespace std;
@@ -51,7 +24,7 @@ vector<int> axles = { 2, 2, 2, 2, 2, 2, 2, 4, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2 };
 
 void  assignd(int D, double a[], double b[]);
 double rnd_uni(long *idum);    /* uniform pseudo random number generator */
-vector<Vec3f> extern evaluate(Mat src, Mat src_gray,int D, double tmp[], long *nfeval); /* obj. funct. */
+vector<Vec3f> extern evaluate(Mat src, Mat src_gray, int D, double tmp[], long *nfeval); /* obj. funct. */
 double inibound_h[] = { 4, 20, 200, 100 };      /* upper parameter bound              */
 //double inibound_l;      /* lower parameter bound              */
 double inibound_l[] = { 1, 10, 40, 20 };
@@ -62,7 +35,7 @@ void pause(char D[])
 	printf("%s", D);
 	scanf("%d", &s);
 }
-void plotCircles(Mat src_display,vector<Vec3f> circles){
+void plotCircles(Mat src_display, vector<Vec3f> circles){
 	cvNamedWindow("DE detected circles", 0);
 	cvResizeWindow("DE detected circles", 600, 400);
 	Mat vehicle = Mat::zeros(200, 1260, CV_8UC3);
@@ -81,20 +54,20 @@ void plotCircles(Mat src_display,vector<Vec3f> circles){
 	cvMoveWindow("DE detected circles", 600, 0);
 	cvWaitKey(0);
 }
-int checkExtraCentroids(Mat src,vector<Vec3f> circles, vector<Vec3f> deCircles){
+int checkExtraCentroids(Mat src, vector<Vec3f> circles, vector<Vec3f> deCircles){
 	int noOfCircles = 0;
 	vector<Vec3f> extraCircles(10);
 	int extra = 0;
-	for (int j = 0; j < deCircles.size();j++){
+	for (int j = 0; j < deCircles.size(); j++){
 		cout << endl;
 		if (abs(cvRound(deCircles[j][1]) - cvRound(circles[0][1])) <= CENTERTHRES && abs(cvRound(deCircles[j][2]) - cvRound(circles[0][2])) < RADIUSTHRES){
 			//cout << " Extra centroid found: Original is  " << circles[0][1] << " radius = " << circles[0][2]<< " and found by DE is " << deCircles[j][1] << " with radius = "<< deCircles[j][2]<<endl;
 			extraCircles[extra++] = deCircles[j];
 			noOfCircles++;
-		}	
+		}
 	}
-	plotCircles(src,extraCircles);
-	return noOfCircles-circles.size();
+	plotCircles(src, extraCircles);
+	return noOfCircles - circles.size();
 }
 bool checkCenteroidMatch(vector<Vec3f> circles, vector<Vec3f> deCircles){
 	bool match = false;
@@ -102,7 +75,7 @@ bool checkCenteroidMatch(vector<Vec3f> circles, vector<Vec3f> deCircles){
 	for (int i = 0; i < circles.size(); i++){
 		match = false;
 		for (int j = 0; j < circles.size(); j++){
-			if ( cvRound(circles[i][1])==cvRound(deCircles[j][1]) ){
+			if (cvRound(circles[i][1]) == cvRound(deCircles[j][1])){
 				//cout << "Match Found with " << circles[i][1] << " and " << (deCircles[j][1])<< endl;
 				match = true;
 				//pause("Matched");
@@ -228,10 +201,10 @@ int GetAlignedCircles(vector<Vec3f> circles){
 				adjacency[i][j] = 0;
 			}
 			//if (noOfCircles==3)
-				//cout << adjacency[i][j] << ",";
+			//cout << adjacency[i][j] << ",";
 		}
 		//if (noOfCircles == 3)
-			//cout << endl;
+		//cout << endl;
 	}
 	//sum the adjacency matrix
 	for (int i = 0; i< noOfCircles; i++){
@@ -247,12 +220,12 @@ int GetAlignedCircles(vector<Vec3f> circles){
 	}
 	int alignedCircles = 0;
 	//Handle the special case of 2 circles
-	if (noOfCircles%2==0){//even circles
+	if (noOfCircles % 2 == 0){//even circles
 		//check if the circles are divided in half
-		if (max == noOfCircles/2)
-			return noOfCircles/2;
+		if (max == noOfCircles / 2)
+			return noOfCircles / 2;
 		//check if all the circles are misaligned
-		else if (noOfCircles/max == noOfCircles){
+		else if (noOfCircles / max == noOfCircles){
 			return 0;
 		}
 		else{
@@ -276,76 +249,76 @@ int GetAlignedCircles(vector<Vec3f> circles){
 		}
 	}
 
-	return ( alignedCircles);
+	return (alignedCircles);
 
 }
 int GetAlignedRadii(vector<Vec3f> circles){
 	int aligned = 1;
 	if (circles.size() <= 1)
 		return 1;
-	vector<int> raddi (circles.size());
+	vector<int> raddi(circles.size());
 	for (int i = 0; i < circles.size(); i++){
 		raddi[i] = (int)circles[i][2];
 		//cout << "Radius is " << raddi[i] << endl;
 	}
 	sort(raddi.begin(), raddi.end());
 	int diff = (raddi[circles.size() - 1] - raddi[0]);
-	if ( diff<= RADIUSTHRES)
+	if (diff <= RADIUSTHRES)
 		aligned = 0;
 	return aligned;
 }
 /*int GetAlignedRadii(vector<Vec3f> circles){
-	const int noOfCircles = circles.size();
-	int **adjacency = new int*[noOfCircles];
-	for (int i = 0; i < noOfCircles; i++)
-		adjacency[i] = new int[noOfCircles];
+const int noOfCircles = circles.size();
+int **adjacency = new int*[noOfCircles];
+for (int i = 0; i < noOfCircles; i++)
+adjacency[i] = new int[noOfCircles];
 
-	//Sum
-	int* adjacencySum = new int[noOfCircles];
-	//Cost
-	int* centerCost = new int[noOfCircles];
-	for (int i = 0; i < noOfCircles; i++){
-		adjacencySum[i] = 0;
-	}
-	for (int i = 0; i < noOfCircles; i++){
-		centerCost[i] = 0;
-	}
-	for (int i = 0; i < noOfCircles; i++){
-		cout << "Radius for circle " << i << " is ->> " << cvRound(circles[i][2]) << endl;
-		for (int j = 0; j < noOfCircles; j++){
-			if (i == j){
-				adjacency[i][j] = 1;
-			}
-			else if (abs(cvRound(circles[i][2]) - cvRound(circles[j][2])) <= RADIUSTHRES) {
-				adjacency[i][j] = 1;
-			}
-			else{
-				adjacency[i][j] = 0;
-			}
-			cout << adjacency[i][j] << ",";
-		}
-		cout << endl;
-	}
-	//sum the adjacency matrix
-	for (int i = 0; i< noOfCircles; i++){
-		for (int j = 0; j < noOfCircles; j++){
-			adjacencySum[i] += adjacency[i][j];
-		}
-	}
-	//find the max
-	int max = adjacencySum[0];
-	for (int i = 1; i < noOfCircles; i++){
-		if (adjacencySum[i]>max)
-			max = adjacencySum[i];
-	}
-	int alignedRaddi = 0;
-	for (int i = 0; i < noOfCircles; i++){
-		if (adjacencySum[i] == max){
-			alignedRaddi++;
-		}
-	}
+//Sum
+int* adjacencySum = new int[noOfCircles];
+//Cost
+int* centerCost = new int[noOfCircles];
+for (int i = 0; i < noOfCircles; i++){
+adjacencySum[i] = 0;
+}
+for (int i = 0; i < noOfCircles; i++){
+centerCost[i] = 0;
+}
+for (int i = 0; i < noOfCircles; i++){
+cout << "Radius for circle " << i << " is ->> " << cvRound(circles[i][2]) << endl;
+for (int j = 0; j < noOfCircles; j++){
+if (i == j){
+adjacency[i][j] = 1;
+}
+else if (abs(cvRound(circles[i][2]) - cvRound(circles[j][2])) <= RADIUSTHRES) {
+adjacency[i][j] = 1;
+}
+else{
+adjacency[i][j] = 0;
+}
+cout << adjacency[i][j] << ",";
+}
+cout << endl;
+}
+//sum the adjacency matrix
+for (int i = 0; i< noOfCircles; i++){
+for (int j = 0; j < noOfCircles; j++){
+adjacencySum[i] += adjacency[i][j];
+}
+}
+//find the max
+int max = adjacencySum[0];
+for (int i = 1; i < noOfCircles; i++){
+if (adjacencySum[i]>max)
+max = adjacencySum[i];
+}
+int alignedRaddi = 0;
+for (int i = 0; i < noOfCircles; i++){
+if (adjacencySum[i] == max){
+alignedRaddi++;
+}
+}
 
-	return (alignedRaddi);
+return (alignedRaddi);
 }*/
 double GetRadiusCost(int actual, int aligned){
 	return actual - aligned;
@@ -356,7 +329,7 @@ int GetCentroidCost(int actual, int aligned){
 int GetCenterDistance(vector<Vec3f> circles){
 	int isClose = 0;
 	for (int i = 0; i < circles.size(); i++){
-		for (int j = i+1; j < circles.size(); j++){
+		for (int j = i + 1; j < circles.size(); j++){
 			//cout << "Distance between centers of " << i << " and " << j << " circles is ->>" << abs(circles[i][0] - circles[j][0]) << endl;
 			if (abs(circles[i][0] - circles[j][0]) < MINCENTERDISTANCE){
 				isClose = 1;
@@ -373,7 +346,7 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	int glbMin = GLBMIN;
 	reset++;
 	//char  chr;             /* y/n choice variable*/
-	char  *strat[] =      
+	char  *strat[] =
 	{
 		"",
 		"DE/best/1/exp",
@@ -423,29 +396,31 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	/* to see whether it already exists */
 	/*if (fpout_ptr != NULL)
 	{
-		printf("\nOutput file %s does already exist, \ntype y if you ", out);
-		printf("want to overwrite it, \nanything else if you want to exit.\n");
-		chr = (char)getchar();
-		if ((chr != 'y') && (chr != 'Y'))
-		{
-			exit(1);
-		}
-		fclose(fpout_ptr);
+	printf("\nOutput file %s does already exist, \ntype y if you ", out);
+	printf("want to overwrite it, \nanything else if you want to exit.\n");
+	chr = (char)getchar();
+	if ((chr != 'y') && (chr != 'Y'))
+	{
+	exit(1);
+	}
+	fclose(fpout_ptr);
 	}*/
 
 	printf("Arg1 %s ", in);
 	printf("Arg2 %s ", out);
 	/*-----Read input data------------------------------------------------*/
-
+	pause();
 	fpin_ptr = fopen(in, "r");
 
 	if (fpin_ptr == NULL)
 	{
 		printf("\nCannot open input file\n");
-		pause("2");
+		pause();
 		//pause("After");
 		exit(1);                                 /* input file is necessary */
 	}
+	cout << "In file read" << endl;
+	pause();
 	double a, b;
 	fscanf(fpin_ptr, "%d", &strategy);       /*---choice of strategy-----------------*/
 	fscanf(fpin_ptr, "%d", &genmax);         /*---maximum number of generations------*/
@@ -458,62 +433,71 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	fscanf(fpin_ptr, "%lf", &CR);            /*---crossing over factor---------------*/
 	fscanf(fpin_ptr, "%d", &seed);           /*---random seed------------------------*/
 
-
 	fclose(fpin_ptr);
-	//pause("2");
+	pause("2");
 	/*-----Checking input variables for proper range----------------------------*/
 
 	if (D > MAXDIM)
 	{
 		printf("\nError! D=%d > MAXDIM=%d\n", D, MAXDIM);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (D <= 0)
 	{
 		printf("\nError! D=%d, should be > 0\n", D);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (NP > MAXPOP)
 	{
 		printf("\nError! NP=%d > MAXPOP=%d\n", NP, MAXPOP);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (NP <= 0)
 	{
 		printf("\nError! NP=%d, should be > 0\n", NP);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if ((CR < 0) || (CR > 1.0))
 	{
 		printf("\nError! CR=%f, should be ex [0,1]\n", CR);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (seed <= 0)
 	{
 		printf("\nError! seed=%d, should be > 0\n", seed);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (refresh <= 0)
 	{
 		printf("\nError! refresh=%d, should be > 0\n", refresh);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (genmax <= 0)
 	{
 		printf("\nError! genmax=%d, should be > 0\n", genmax);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if ((strategy < 0) || (strategy > 10))
 	{
 		printf("\nError! strategy=%d, should be ex {1,2,3,4,5,6,7,8,9,10}\n", strategy);
-		exit(1);
+		pause();
+		//exit(1);
 	}
 	if (inibound_h < inibound_l)
 	{
 		printf("\nError! inibound_h=%f < inibound_l=%f\n", inibound_h, inibound_l);
-		exit(1);
+		pause();
+	//	exit(1);
 	}
-	//pause("3");
+	pause("3");
 
 	/*-----Open output file-----------------------------------------------*/
 
@@ -522,7 +506,7 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	if (fpout_ptr == NULL)
 	{
 		printf("\nCannot open output file\n");
-		//pause();
+		pause();
 		exit(1);
 	}
 
@@ -532,7 +516,8 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	rnd_uni_init = -(long)seed;  /* initialization of rnd_uni() */
 	nfeval = 0;  /* reset number of function evaluations */
 
-
+	cout << "Everything clear" << endl;
+	pause();
 
 	/*------Initialization------------------------------------------------*/
 	/*------Right now this part is kept fairly simple and just generates--*/
@@ -554,16 +539,16 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 		//*************Model 1 start ************************//
 		/*cost[i] = deCircles.size();
 		if (cost[i] < (double)circles.size()){
-			cost[i] = MAXCIRCLES;
+		cost[i] = MAXCIRCLES;
 		}
 		else if (cost[i] == (double)circles.size()){
-			bool match = checkCenteroidMatch(circles,deCircles);
+		bool match = checkCenteroidMatch(circles,deCircles);
 		}
 		else if (cost[i]>(double)circles.size() && cost[i] < (double)MAXCIRCLES){
-			int noOfCircles = checkExtraCentroids(src,circles, deCircles);
-			cout << "No of extra circles are " << noOfCircles<<endl;
-			fflush(stdin);
-			//pause("");
+		int noOfCircles = checkExtraCentroids(src,circles, deCircles);
+		cout << "No of extra circles are " << noOfCircles<<endl;
+		fflush(stdin);
+		//pause("");
 		}*/
 		//*************Model 1 End ************************//
 
@@ -840,17 +825,17 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 			//trial_cost += GetRadiusCost(deCircles.size(), alignedRaddi);
 			trial_cost += pow(MAXCIRCLES, 2) *(alignedRaddi*1.0);
 			//trial_cost += pow(MAXCIRCLES, 2) * (((double)deCircles.size() - alignedRaddi) + 0.0);
-			
+
 			int isClose = GetCenterDistance(deCircles);
 			//cout << "Min center distance factor is ->> " << isClose << endl;
 			trial_cost += pow(MAXCIRCLES, 2) *(isClose*1.0);
 
 			//commented for Model 2
 			/*if (trial_cost < (double)circles.size()){
-				trial_cost = MAXCIRCLES;
+			trial_cost = MAXCIRCLES;
 			}*/
 			/*if (trial_cost < glbMin){
-				trial_cost = MAXCIRCLES;
+			trial_cost = MAXCIRCLES;
 			}*/
 			//cout << "Trial cost after center cost addition is " << trial_cost << endl;
 			//cout << "***********************************************************" << endl;
@@ -922,7 +907,7 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	}
 	/*=========End of iteration loop=========================================*/
 	cout << "Best is " << bestSol.size() << endl;
-	cout << "Axles for image " << imageNo<< " are " << axles[imageNo] << endl;
+	cout << "Axles for image " << imageNo << " are " << axles[imageNo] << endl;
 	//cvWaitKey(0);
 	int res = 0;
 	if (bestSol.size() == axles[imageNo]){
@@ -933,35 +918,30 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	}
 
 	/*-------Final output in file-------------------------------------------*/
-	fprintf(fpout_ptr, "%f|%d", cmin,res);
-	
+	fprintf(fpout_ptr, "%f|%d", cmin, res);
+
 
 	//for (j = 0; j<D; j++)
 	//{
-		//fprintf(fpout_ptr, "\n best[%d]=%-15.10g", j, best[j]);
+	//fprintf(fpout_ptr, "\n best[%d]=%-15.10g", j, best[j]);
 	//}
 	//fprintf(fpout_ptr, "\n\n Generation=%d  NFEs=%ld   Strategy: %s    ", gen, nfeval, strat[strategy]);
 	//fprintf(fpout_ptr, "\n NP=%d    F=%-4.2g    CR=%-4.2g    cost-variance=%-10.5g\n",
-		//NP, F, CR, cvar);
+	//NP, F, CR, cvar);
 	if (reset % noOfStrategies == 0){
-		fprintf(fpout_ptr,"\n");
+		fprintf(fpout_ptr, "\n");
 		reset = 0;
 	}
 	fclose(fpout_ptr);
 	/*cout << "No of circles found are ->>> " << bestSol.size() << " with cost ->> "<< cmin<<endl;
 	for (int i = 0; i < bestSol.size(); i++){
-		cout << "******************************" << endl;
-		cout << " x ->> " << bestSol[i][0] << endl;
-		cout << " y ->> " << bestSol[i][1] << endl;
-		cout << " z ->> " << bestSol[i][2] << endl;
-		
+	cout << "******************************" << endl;
+	cout << " x ->> " << bestSol[i][0] << endl;
+	cout << " y ->> " << bestSol[i][1] << endl;
+	cout << " z ->> " << bestSol[i][2] << endl;
+
 	}*/
 	return bestSol;
 }
 
 /*-----------End of main()------------------------------------------*/
-
-
-
-
-
