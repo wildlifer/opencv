@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	//File
 	ofstream outFile;
 	//Video
-	VideoCapture cap("videos/5.2.mp4");
+	VideoCapture cap(video);
 	vector<Mat> training(TRAINING_FRAMES);
 	vector<Mat> no_contour_frame_vec(NO_CONTOUR_FRAME_COUNT);
 	Mat background, gray_background, backup_background;;
@@ -340,7 +340,7 @@ int main(int argc, char** argv)
 				if (!possible_merge && !vec_check && pt1.x > 2 * MIN_VEHICLE_WIDTH && pt1.x < (frame_width - 3 * MIN_VEHICLE_WIDTH) &&
 					pt2.x < (frame_width - 3*MIN_VEHICLE_WIDTH) )
 				{
-					Mat a = unblur_gray_nextframe(Rect(pt1.x, pt1.y, vehicle_width, vehicle_height + 5));
+					Mat a = unblur_gray_nextframe(Rect(pt1.x-25, pt1.y-25, vehicle_width+25, vehicle_height + 45));
 					/*Mat detected_edges;
 					Canny(a, detected_edges, 1, 3, 3);
 					Mat dst;// = Scalar::all(0);

@@ -17,7 +17,8 @@
 using namespace std;
 using namespace cv;
 
-
+//Video
+const String video = "videos/4.5.mp4";
 //Pixel wise comparison model
 //Intensity based threshold
 const int MIN_INTENSITY_DIFFERENCE = 20;
@@ -73,8 +74,6 @@ const int HOUGH_THRESHOLD = 5; //dont know its use yet
 const int maxAccumulatorThreshold = 400;
 const int maxCannyThreshold = 255;
 const int maxInverseResolution = 3;
-
-
 
 const int MAX_CONTOURS = 10;
 const int APERTURE = 3;

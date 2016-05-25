@@ -512,11 +512,10 @@ void OptimizeDE(Mat src, Mat src_gray, vector<Vec3f> circles, char infile[], cha
 	//memcpy(outfile,outFile.c_str(),outFile.size());
 
 	cout << "Entering DE " << endl;
-	pause();
 	for (int i = 0; i < strategies.size(); i++){
-		vector<Vec3f> deCircles = DE(src, src_gray, circles, infile, out, i + 6, strategies.size(), imageNo);
+		vector<Vec3f> deCircles = DE(src, src_gray, circles, infile, out, i + 7, strategies.size(), imageNo);
 		//ShowCircles("Detected by DE", deCircles, src, strategies[i], file);
-		drawCircles(src, deCircles, "Detected by DE",ORIGIN,ORIGIN+SHIFT);
+		drawCircles(src, deCircles, "Detected by DE", ORIGIN,ORIGIN+350);
 	}
 	//cvWaitKey(0);
 }

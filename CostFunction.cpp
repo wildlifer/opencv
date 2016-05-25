@@ -1,6 +1,17 @@
 # include "de.h"
-double inibound_h1[] = { 4, 20, 200, 100, 10, 20 };      /* upper parameter bound */
-double inibound_l1[] = { 1, 10, 40,  20,  20, 40 };
+
+double inibound_l1[] = { 1, 5,  10,   8, 2, 4 };			/* lower parameter bound */
+double inibound_h1[] = { 2, 20, 100, 20, 4, 6 };      /* upper parameter bound */
+
+/*[inverseResolution,src_gray.rows / 3, cannyThreshold, accumulatorThreshold, minRadius, maxRadius]*/
+/*
+dp – Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height.
+minDist – Minimum distance between the centers of the detected circles. If the parameter is too small, multiple neighbor circles may be falsely detected in addition to a true one. If it is too large, some circles may be missed.
+param1 – First method-specific parameter. In case of CV_HOUGH_GRADIENT , it is the higher threshold of the two passed to the Canny() edge detector (the lower one is twice smaller).
+param2 – Second method-specific parameter. In case of CV_HOUGH_GRADIENT , it is the accumulator threshold for the circle centers at the detection stage. The smaller it is, the more false circles may be detected. Circles, corresponding to the larger accumulator values, will be returned first.
+minRadius – Minimum circle radius.
+maxRadius – Maximum circle radius.
+*/
 
 using namespace std;
 using namespace cv;

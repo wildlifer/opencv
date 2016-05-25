@@ -112,28 +112,6 @@ void  assignd(int D, double a[], double b[])
 
 
 double rnd_uni(long *idum)
-/**C*F****************************************************************
-**                                                                  **
-** SRC-FUNCTION   :rnd_uni()                                        **
-** LONG_NAME      :random_uniform                                   **
-** AUTHOR         :(see below)                                      **
-**                                                                  **
-** DESCRIPTION    :rnd_uni() generates an equally distributed ran-  **
-**                 dom number in the interval [0,1]. For further    **
-**                 reference see Press, W.H. et alii, Numerical     **
-**                 Recipes in C, Cambridge University Press, 1992.  **
-**                                                                  **
-** FUNCTIONS      :none                                             **
-**                                                                  **
-** GLOBALS        :none                                             **
-**                                                                  **
-** PARAMETERS     :*idum    serves as a seed value                  **
-**                                                                  **
-** PRECONDITIONS  :*idum must be negative on the first call.        **
-**                                                                  **
-** POSTCONDITIONS :*idum will be changed                            **
-**                                                                  **
-***C*F*E*************************************************************/
 {
 	long j;
 	long k;
@@ -409,7 +387,6 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	printf("Arg1 %s ", in);
 	printf("Arg2 %s ", out);
 	/*-----Read input data------------------------------------------------*/
-	pause();
 	fpin_ptr = fopen(in, "r");
 
 	if (fpin_ptr == NULL)
@@ -419,22 +396,21 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 		//pause("After");
 		exit(1);                                 /* input file is necessary */
 	}
-	cout << "In file read" << endl;
-	pause();
+	
 	double a, b;
 	fscanf(fpin_ptr, "%d", &strategy);       /*---choice of strategy-----------------*/
 	fscanf(fpin_ptr, "%d", &genmax);         /*---maximum number of generations------*/
 	fscanf(fpin_ptr, "%d", &refresh);        /*---output refresh cycle---------------*/
 	fscanf(fpin_ptr, "%d", &D);              /*---number of parameters---------------*/
 	fscanf(fpin_ptr, "%d", &NP);             /*---population size.-------------------*/
-	fscanf(fpin_ptr, "%lf", &a);    /*---upper parameter bound for init-----*/
-	fscanf(fpin_ptr, "%lf", &b);    /*---lower parameter bound for init-----*/
+	fscanf(fpin_ptr, "%lf", &a);			/*---upper parameter bound for init-----*/
+	fscanf(fpin_ptr, "%lf", &b);			/*---lower parameter bound for init-----*/
 	fscanf(fpin_ptr, "%lf", &F);             /*---weight factor----------------------*/
 	fscanf(fpin_ptr, "%lf", &CR);            /*---crossing over factor---------------*/
 	fscanf(fpin_ptr, "%d", &seed);           /*---random seed------------------------*/
 
 	fclose(fpin_ptr);
-	pause("2");
+	
 	/*-----Checking input variables for proper range----------------------------*/
 
 	if (D > MAXDIM)
@@ -494,10 +470,10 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	if (inibound_h < inibound_l)
 	{
 		printf("\nError! inibound_h=%f < inibound_l=%f\n", inibound_h, inibound_l);
-		pause();
+		//pause();
 	//	exit(1);
 	}
-	pause("3");
+	
 
 	/*-----Open output file-----------------------------------------------*/
 
@@ -517,8 +493,6 @@ vector<Vec3f> DE(Mat src, Mat src_gray, vector<Vec3f> circles, char in[], char o
 	nfeval = 0;  /* reset number of function evaluations */
 
 	cout << "Everything clear" << endl;
-	pause();
-
 	/*------Initialization------------------------------------------------*/
 	/*------Right now this part is kept fairly simple and just generates--*/
 	/*------random numbers in the range [-initfac, +initfac]. You might---*/
