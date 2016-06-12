@@ -1,7 +1,7 @@
 # include "de.h"
 
-double inibound_l1[] = { 1, 5,  10,   8, 2, 4 };			/* lower parameter bound */
-double inibound_h1[] = { 2, 20, 100, 20, 4, 6 };      /* upper parameter bound */
+double inibound_l1[] = { 1, 5,  60,   8, 4, 8 };			/* lower parameter bound */
+double inibound_h1[] = { 2, 20, 200, 20, 8, 12 };      /* upper parameter bound */
 
 /*[inverseResolution,src_gray.rows / 3, cannyThreshold, accumulatorThreshold, minRadius, maxRadius]*/
 /*

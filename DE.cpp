@@ -25,9 +25,12 @@ vector<int> axles = { 2, 2, 2, 2, 2, 2, 2, 4, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2 };
 void  assignd(int D, double a[], double b[]);
 double rnd_uni(long *idum);    /* uniform pseudo random number generator */
 vector<Vec3f> extern evaluate(Mat src, Mat src_gray, int D, double tmp[], long *nfeval); /* obj. funct. */
-double inibound_h[] = { 4, 20, 200, 100 };      /* upper parameter bound              */
-//double inibound_l;      /* lower parameter bound              */
-double inibound_l[] = { 1, 10, 40, 20 };
+
+//double inibound_l[] = { 1, 5,  40,  8 };
+//double inibound_h[] = { 2, 20, 200, 20 };      /* upper parameter bound */
+
+double inibound_l[] = { 1, 5,   60,  8, 4, 8 };			/* lower parameter bound */
+double inibound_h[] = { 2, 20, 200, 20, 8, 12 };      /* upper parameter bound */
 /*---------Function definitions-----------------------------------------*/
 void pause(char D[])
 {

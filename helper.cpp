@@ -497,9 +497,10 @@ bool HoughDetection(const Mat& src_gray, const Mat& src_display, int cannyThresh
 	cout << circles.size() << " circles found" << endl;
 	// shows the results
 	drawCircles(src_display, circles, "Circles", ORIGIN, ORIGIN);
-	circles = GetAlignedCenters(circles);
+	circles = GetAlignedCenters(circles,src_display);
+	drawCircles(src_display, circles, "Aligned Circles", ORIGIN, ORIGIN+400);
 	//Call DE module
-	OptimizeDE(src_display, src_gray, circles, "in.txt", "out.txt", "", 1);
+	//OptimizeDE(src_display, src_gray, circles, "in.txt", "out.txt", "", 1);
 	//drawCircles(src_display, circles, "Aligned Circles", ORIGIN , src_display.rows+300);
 	cvWaitKey(30);
 	return true;
@@ -537,8 +538,12 @@ void drawCircles(Mat src_display, std::vector<Vec3f> circles, char* name, int x,
 	//imshow("Circles", display);
 	cvWaitKey(30);
 }
-vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles){
+vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles, Mat mat){
 	const int noOfCircles = circles.size();
+	cv::Size s = mat.size();
+	int height = s.height;
+	int width  = s.width;
+
 	int noOfFinalCircles = 0;
 	int **adjacency = new int*[noOfCircles];
 	for (int i = 0; i < noOfCircles; i++)
@@ -555,8 +560,10 @@ vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles){
 			if (i == j){
 				adjacency[i][j] = 1;
 			}
-			else if (abs(cvRound(circles[i][1]) - cvRound(circles[j][1])) < HOUGH_THRESHOLD) {
-				adjacency[i][j] = 1;
+			else if (abs(cvRound(circles[i][1]) - cvRound(circles[j][1])) < CENTROID_THRESHOLD) {			
+				if (circles[j][1]>height/2){
+					adjacency[i][j] = 1;
+				}
 			}
 			else{
 				adjacency[i][j] = 0;

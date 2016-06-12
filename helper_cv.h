@@ -18,7 +18,7 @@ using namespace std;
 using namespace cv;
 
 //Video
-const String video = "videos/4.5.mp4";
+const String video = "videos/Trims/1.mp4";
 //Pixel wise comparison model
 //Intensity based threshold
 const int MIN_INTENSITY_DIFFERENCE = 20;
@@ -40,7 +40,7 @@ Cue 5: right x coordinate
 Cue 6: right y coordinate
 Cue 7: direction (1 for left, 2 for right)
 */
-const int MERGE_THRES = 5;
+const int MERGE_THRES = 25;
 const int MIN_WIDTH_TO_HEIGHT_RATIO = 2;
 const int MAX_WIDTH_TO_HEIGHT_RATIO = 5;
 
@@ -55,7 +55,7 @@ const int INTERSEC = 2;
 //Vehicle identification parameters
 const int MIN_VEHICLE_HEIGHT = 8;
 const int MIN_VEHICLE_WIDTH = 20;
-const double MIN_VEHICLE_AREA = 150;
+const double MIN_VEHICLE_AREA = 150;	
 const double MIN_DETECTABLE_AREA = 50;
 const int MAX_Y_TOLERANCE = 15;
 const int MAX_X_TOLERANCE = 10;
@@ -64,12 +64,13 @@ const int MAX_HEIGHT_TOLERANCE = 5;
 const int MAX_WIDTH_TOLERANCE = 5;
 
 //Circle detection parameters
-const int cannyThresholdInitialValue = 50;
+const int cannyThresholdInitialValue = 60;
 const int accumulatorThresholdInitialValue = 10;
 const int inverseResolutionInitialValue = 1;
-const int minRadius = 5;
-const int maxRadius = 10;
-const int HOUGH_THRESHOLD = 5; //dont know its use yet
+const int minRadius = 4;
+const int maxRadius = 8;
+const int HOUGH_THRESHOLD = 1; //dont know its use yet
+const int CENTROID_THRESHOLD = 3;
 
 const int maxAccumulatorThreshold = 400;
 const int maxCannyThreshold = 255;
@@ -150,7 +151,7 @@ double stdev(double mean, vector<double> arr);
 Mat emptyMat(Mat i);
 bool checkCircles(Mat src_gray);
 bool HoughDetection(const Mat& src_gray, const Mat& src_display, int cannyThreshold, int accumulatorThreshold, int inverseResolution, int, int);
-vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles);
+vector<Vec3f> GetAlignedCenters(vector<Vec3f> , Mat);
 void drawCircles(Mat, std::vector<Vec3f> , char*,  int, int);
 void OptimizeDE(Mat src, Mat src_gray, vector<Vec3f> circles, char infile[], char outfile[], String file, int imageNo);
 vector<Vec3f> DE(Mat, Mat, vector<Vec3f>, char[], char[], int, int, int);
