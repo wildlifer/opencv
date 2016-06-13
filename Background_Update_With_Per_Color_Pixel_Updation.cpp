@@ -69,8 +69,7 @@ int main(int argc, char** argv)
 	int vehicles = 0;
 	
 	while (1) {
-		frame_no++;
-		
+		frame_no++;		
 		//new frame
 		cap >> nextframe;
 		if (nextframe.empty()) break;
@@ -90,6 +89,7 @@ int main(int argc, char** argv)
 		string frameNumberString = convert.str();
 		putText(nextframe, frameNumberString.c_str(), cv::Point(15, 15),
 			FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+
 		//Show Original Video  - IplImage model
 		cvtColor(nextframe, gray_nextframe, CV_BGR2GRAY);
 		Mat unblur_gray_nextframe = gray_nextframe.clone();
@@ -109,6 +109,12 @@ int main(int argc, char** argv)
 		Mat m(I);
 		diff = m.clone();
 		
+		/*Experimental code connecting the contours*/
+		/*Mat outputImage(diff);
+		cv::Mat structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(20, 20));
+		cv::morphologyEx(diff, outputImage, cv::MORPH_CLOSE, structuringElement);
+		*/
+		imshow("Diff Frame", diff);
 		Mat src = diff.clone();
 		vector<vector<Point>> contours;
 		Rect boundRec;
@@ -117,7 +123,7 @@ int main(int argc, char** argv)
 		//CV_RETR_EXTERNAL is important here. It helps to find only outer contours which is what we need
 		findContours(src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		double max_area_diff_frame = 300;
+		double max_area_diff_frame = 100;
 		Point p,q;
 		int wid, hi = 0;
 		/***************Check for max area contour and fill the max_area with whites***************/
@@ -140,10 +146,10 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-		
+		/***************Check for max area contour and fill the max_area with whites***************/
 	
 		//imshow("Diff Frame After updation", diff);
-		imshow("Diff Frame", diff);
+		//imshow("Diff Frame", diff);
 		//cvWaitKey(30);
 
 		/***************Check for max area contour and fill the max_area with whites***************/
@@ -166,13 +172,14 @@ int main(int argc, char** argv)
 		bool copy_frame_as_background = true;
 		bool check_for_min_contour = true;
 		bool possible_merge = false;
-		/********Check for possible merge of vehicles*******/
+		/********Check for possible merge of vehicles: Method 1*******/
 		for (int i = 0; i < vehicles-1; i++){
 			/*cout << "vehicles_in_memory[i][4]= " << vehicles_in_memory[i][4] << endl;
 			cout << "vehicles_in_memory[i+1][0]= " << vehicles_in_memory[i + 1][0] << endl;
 			cout << "vehicles_in_memory[i][0]= " << vehicles_in_memory[i][0] << endl;
 			cout << "vehicles_in_memory[i+1][4]= " << vehicles_in_memory[i + 1][4] << endl;
 			*/
+			cout << "################Possible MERGE ahead: Detected by method 1###################" << endl;
 			if (abs(vehicles_in_memory[i][4] - vehicles_in_memory[i+1][0]) < MERGE_THRES){
 				cout << "vehicles_in_memory[i][4]= " << vehicles_in_memory[i][4]<< endl;
 				cout << "vehicles_in_memory[i+1][0]= " << vehicles_in_memory[i+1][0] << endl;
@@ -184,11 +191,36 @@ int main(int argc, char** argv)
 				possible_merge = true;
 			}
 		}
-		/********Check for possible merge of vehicles*******/
+		/********Check for possible merge of vehicles: Method 1*******/
 
+		/********Check for possible merge of vehicles: Method 2*******/
+		/*if (vehicles > contours.size()){
+			cout << "################Possible MERGE ahead: Detected by method 2###################" << endl;
+			possible_merge = true;
+			pause();
+		}*/
+		/********Check for possible merge of vehicles: Method 2*******/
 		if (possible_merge){
 			cout << "################Possible MERGE ahead###################" << endl;
-			pause();
+			/*Update the xcoordinate of the vehicles approximatly*/
+			/*for (int i = 0; i < vehicles; i++){
+				cout << "No of veehicls are :" << vehicles << endl;
+				cout << "Running vehicle number: " << i + 1 << endl;
+				if (vehicles_in_memory[i][6] == 1){//for vehicles moving left
+					
+					cout << "Updated x1 of vehicle moving left from " << vehicles_in_memory[i][0] <<
+						" to " << vehicles_in_memory[i][0] - 5 << endl;
+					vehicles_in_memory[i][0] -= 5;
+					vehicles_in_memory[i][4] -= 5;
+				}
+				if (vehicles_in_memory[i][6] == 2){//for vehicles moving right
+					cout << "Updated x1 of vehicle moving right from " << vehicles_in_memory[i][0] <<
+						" to " << vehicles_in_memory[i][0] + 5 << endl;
+					vehicles_in_memory[i][0] += 5;
+					vehicles_in_memory[i][4] += 5;
+				}
+			}*/
+			//pause();
 		}
 		
 		
@@ -259,102 +291,106 @@ int main(int argc, char** argv)
 				/*****************check if the vehicle has already been detected*****************/
 				bool vec_check = false;
 				int memory = vehicles;
-				for (int i = 0; i < memory; i++){
-					cout << "****************No of vehicles to check are: " << vehicles << "***********" << endl;
-					cout << "****************checking for vehicle no " << i+1 << "***********"<<endl;
-					cout << "Newly Detected Vehicle width: " << vehicle_width << " and Stored vehicle width: " << vehicles_in_memory[i][2] << endl;
-					cout << "Newly Detected Vehicle height: " << vehicle_height << " and Stored vehicle height: " << vehicles_in_memory[i][3] << endl;
-					cout << "Newly Detected Vehicle x: " << pt1.x << " and Stored vehicle x: " << vehicles_in_memory[i][0] << endl;
-					cout << "Newly Detected Vehicle y: " << pt1.y << " and Stored vehicle y: " << vehicles_in_memory[i][1] << endl;
-					cout << "X difference is " << (abs(vehicles_in_memory[i][0] - pt1.x))  << endl;
-					cout << "*****************************************************" << endl;
+				/*Check only if no merge*/
+				if (!possible_merge){
+					for (int i = 0; i < memory; i++){
+						cout << "****************No of vehicles to check are: " << vehicles << "***********" << endl;
+						cout << "****************checking for vehicle no " << i + 1 << "***********" << endl;
+						/*cout << "Newly Detected Vehicle width: " << vehicle_width << " and Stored vehicle width: " << vehicles_in_memory[i][2] << endl;
+						cout << "Newly Detected Vehicle height: " << vehicle_height << " and Stored vehicle height: " << vehicles_in_memory[i][3] << endl;
+						cout << "Newly Detected Vehicle x: " << pt1.x << " and Stored vehicle x: " << vehicles_in_memory[i][0] << endl;
+						cout << "Newly Detected Vehicle y: " << pt1.y << " and Stored vehicle y: " << vehicles_in_memory[i][1] << endl;
+						cout << "X difference is " << (abs(vehicles_in_memory[i][0] - pt1.x))  << endl;
+						cout << "*****************************************************" << endl;*/
 
-					if ( (((abs(vehicles_in_memory[i][1] - pt1.y)  < MAX_Y_TOLERANCE) &&
-						 (abs(vehicles_in_memory[i][3] - vehicle_height) < MAX_Y_TOLERANCE)) //1:Check for similar height and y coordinates
-						||//else check for similar width and height
-						 ((abs(vehicles_in_memory[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
-						  (abs(vehicles_in_memory[i][3] - vehicle_height) < MAX_Y_TOLERANCE))	
-						||//else check for width and y coordinates
-						 ((abs(vehicles_in_memory[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
-						 (abs(vehicles_in_memory[i][1] - pt1.y) < MAX_Y_TOLERANCE))) 
-						&&//2:Check for 
-						//(abs(vehicles_in_memory[i][0] - pt1.x) < (vehicle_width + MAX_X_TOLERANCE))
-						(abs(vehicles_in_memory[i][0] - pt1.x) < (MAX_X_TOLERANCE+20))  //Newly added
-						&&
-						(vehicle_width < 1.5*(vehicles_in_memory[i][2]))//Added to counter the vehicle merge situation
-					   ){
-						vec_check = true;
-						cout << "***************Vehicle no " << i +1 << " already exists****************" << endl;						
-						/*Find the direction of the vehicle*/
-						if (pt1.x >= vehicles_in_memory[i][0] && pt2.x >= vehicles_in_memory[i][4]){						
-							cout << "Vehicle No " << i+1 << " travelling RIGHT >>>>>>>>>>>>>>> at " << pt1.x << "," << pt2.x << " previously at " <<
-								vehicles_in_memory[i][0] << "," << vehicles_in_memory[i][4] << endl;
+						if ((((abs(vehicles_in_memory[i][1] - pt1.y) < MAX_Y_TOLERANCE) &&
+							(abs(vehicles_in_memory[i][3] - vehicle_height) < MAX_Y_TOLERANCE)) //1:Check for similar height and y coordinates
+							||//else check for similar width and height
+							((abs(vehicles_in_memory[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
+							(abs(vehicles_in_memory[i][3] - vehicle_height) < MAX_Y_TOLERANCE))
+							||//else check for width and y coordinates
+							((abs(vehicles_in_memory[i][2] - vehicle_width) < MAX_X_TOLERANCE) &&
+							(abs(vehicles_in_memory[i][1] - pt1.y) < MAX_Y_TOLERANCE)))
+							&&//2:Check for 
+							//(abs(vehicles_in_memory[i][0] - pt1.x) < (vehicle_width + MAX_X_TOLERANCE))
+							(abs(vehicles_in_memory[i][0] - pt1.x) < (MAX_X_TOLERANCE + 20))  //Newly added
+							&&
+							(vehicle_width < 1.5*(vehicles_in_memory[i][2]))//Added to counter the vehicle merge situation
+							){
+							vec_check = true;
+							cout << "***************Vehicle no " << i + 1 << " already exists****************" << endl;
+							/*Find the direction of the vehicle*/
+							if (pt1.x >= vehicles_in_memory[i][0] && pt2.x >= vehicles_in_memory[i][4]){
+								cout << "Vehicle No " << i + 1 << " travelling RIGHT >>>>>>>>>>>>>>> at " << pt1.x << "," << pt2.x << " previously at " <<
+									vehicles_in_memory[i][0] << "," << vehicles_in_memory[i][4] << endl;
 
-							/*Direction update*/
-							vehicles_in_memory[i][6] = 2;
+								/*Direction update*/
+								vehicles_in_memory[i][6] = 2;
 
-							//update the x1 and x2 coordinates of the vehicle
-							vehicles_in_memory[i][0] = pt1.x;
-							vehicles_in_memory[i][4] = pt2.x;
+								//update the x1 and x2 coordinates of the vehicle
+								vehicles_in_memory[i][0] = pt1.x;
+								vehicles_in_memory[i][4] = pt2.x;
 
-							/*Exit check*/
-							if (pt2.x > (frame_width - (5)) && pt2.x < frame_width){
-								cout << ">>>>>>>>>>Vehicle Exiting RIGHT>>>>>>>>>>>>>" << endl;
-								/*Now remove vehicle from the memory*/
-								for (int j = 0; j < NO_OF_CUES; j++){
-									vehicles_in_memory[i][j] = 0;
+								/*Exit check*/
+								if (pt2.x > (frame_width - (5)) && pt2.x < frame_width){
+									cout << ">>>>>>>>>>Vehicle Exiting RIGHT>>>>>>>>>>>>>" << endl;
+									/*Now remove vehicle from the memory*/
+									for (int j = 0; j < NO_OF_CUES; j++){
+										vehicles_in_memory[i][j] = 0;
+									}
+									cout << "Vehicle removed from memory" << endl;
+									--vehicles;
+									cout << "Vehicle left in memory: " << vehicles << endl;
+									//pause();
 								}
-								cout << "Vehicle removed from memory" << endl;
-								--vehicles;
-								cout << "Vehicle left in memory: " << vehicles << endl;
-								//pause();
 							}
+							else if (pt1.x <= vehicles_in_memory[i][0] && pt2.x <= vehicles_in_memory[i][4]){
+								/*	cout << "pt1.x = " << pt1.x << endl;
+									cout << "vehicles_in_memory[i][0] = " << vehicles_in_memory[i][0] << endl;
+									cout << "pt2.x = " << pt2.x << endl;
+									cout << "vehicles_in_memory[i][4] = " << vehicles_in_memory[i][4] << endl;
+									*/
+								cout << "Vehicle No " << i + 1 << " travelling LEFT <<<<< at " << pt1.x << "," << pt2.x << " previously at " <<
+									vehicles_in_memory[i][0] << "," << vehicles_in_memory[i][4] << endl;
+								/*Direction update*/
+								vehicles_in_memory[i][6] = 1;
+								//update the x1 and x2 coordinates of the vehicle
+								vehicles_in_memory[i][0] = pt1.x;
+								vehicles_in_memory[i][4] = pt2.x;
+
+								/*Exit check*/
+								if (pt1.x > 0 && pt1.x < 5){
+									cout << "<<<<<<<<<<<Vehicle Exiting LEFT<<<<<<<<<<<<" << endl;
+									/*Now remove vehicle from the memory*/
+									for (int j = 0; j < NO_OF_CUES; j++){
+										vehicles_in_memory[i][j] = 0;
+									}
+									cout << "Vehicle removed from memory" << endl;
+									--vehicles;
+									cout << "Vehicle left in memory: " << vehicles << endl;
+									pause();
+								}
+							}
+							//pause();
+							break;
 						}
-						else if (pt1.x <= vehicles_in_memory[i][0] && pt2.x <= vehicles_in_memory[i][4]){
-						/*	cout << "pt1.x = " << pt1.x << endl;
-							cout << "vehicles_in_memory[i][0] = " << vehicles_in_memory[i][0] << endl;
-							cout << "pt2.x = " << pt2.x << endl;
-							cout << "vehicles_in_memory[i][4] = " << vehicles_in_memory[i][4] << endl;
-							*/
-							cout << "Vehicle No " << i +1<< " travelling LEFT <<<<< at " << pt1.x << "," << pt2.x << " previously at " <<
-								vehicles_in_memory[i][0] << "," << vehicles_in_memory[i][4] << endl;
-							/*Direction update*/
-							vehicles_in_memory[i][6] = 1;
-							//update the x1 and x2 coordinates of the vehicle
-							vehicles_in_memory[i][0] = pt1.x;
-							vehicles_in_memory[i][4] = pt2.x;
+						else if ((pt1.x >= vehicles_in_memory[i][0] + 10 && pt1.x <= vehicles_in_memory[i][0] + vehicles_in_memory[i][2] + 10) &&
+							(pt2.x >= vehicles_in_memory[i][0] + 10 && pt2.x <= vehicles_in_memory[i][0] + vehicles_in_memory[i][2] + 10))
+						{ //Check for split contours
+							cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+							cout << "------Split vehicle detected-------" << endl;
+							cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+							vec_check = true;
+							//pause();
+							break;
+						}
+					}//end of memory vehicle match
 
-							/*Exit check*/
-							if (pt1.x > 0 && pt1.x < 5){
-								cout << "<<<<<<<<<<<Vehicle Exiting LEFT<<<<<<<<<<<<" << endl;
-								/*Now remove vehicle from the memory*/
-								for (int j = 0; j < NO_OF_CUES; j++){
-									vehicles_in_memory[i][j] = 0;
-								}
-								cout << "Vehicle removed from memory" << endl;
-								--vehicles;
-								cout << "Vehicle left in memory: " << vehicles << endl;
-								//pause();
-							}
-						}			
-						//pause();
-						//break;
-					}
-					else if ((pt1.x >= vehicles_in_memory[i][0] + 10 && pt1.x <= vehicles_in_memory[i][0]+ vehicles_in_memory[i][2] + 10) &&
-						(pt2.x >= vehicles_in_memory[i][0] + 10 && pt2.x <= vehicles_in_memory[i][0] + vehicles_in_memory[i][2] + 10))
-					{ //Check for split contours
-						cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-						cout << "------Split vehicle detected-------" << endl;
-						cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-						vec_check = true;
-						pause();
-						break;
-					}
-				}//end of memory vehicle match
-
-				/*****************check if the vehicle has already been detected*****************/
+					/*****************check if the vehicle has already been detected*****************/
+				}/*Check only if no merge*/
 
 				/*********************check for a new vehicle********************/
+				cout << "Merging is " << possible_merge << endl;
 				if (!possible_merge && !vec_check && 
 					pt1.x > 2 * MIN_VEHICLE_WIDTH &&
 					pt1.x < (frame_width - 3 * MIN_VEHICLE_WIDTH) &&
@@ -366,7 +402,7 @@ int main(int argc, char** argv)
 					a.copyTo(dst, detected_edges);
 					imshow("Edges", detected_edges);*/
 
-					/*bool circle_found = checkCircles(a);
+				/*	bool circle_found = checkCircles(a);
 					if (circle_found){
 						cout << "-----------------Circle found------------------" << endl;
 						//pause();

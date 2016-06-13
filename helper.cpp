@@ -561,7 +561,7 @@ vector<Vec3f> GetAlignedCenters(vector<Vec3f> circles, Mat mat){
 				adjacency[i][j] = 1;
 			}
 			else if (abs(cvRound(circles[i][1]) - cvRound(circles[j][1])) < CENTROID_THRESHOLD) {			
-				if (circles[j][1]>height/2){
+				if (circles[j][1]>0.70*height){
 					adjacency[i][j] = 1;
 				}
 			}

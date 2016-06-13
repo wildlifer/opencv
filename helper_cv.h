@@ -18,7 +18,7 @@ using namespace std;
 using namespace cv;
 
 //Video
-const String video = "videos/Trims/1.mp4";
+const String video = "videos/Trims/2.mp4";
 //Pixel wise comparison model
 //Intensity based threshold
 const int MIN_INTENSITY_DIFFERENCE = 20;
@@ -53,8 +53,8 @@ const int BHATTA = 3;
 const int INTERSEC = 2;
 
 //Vehicle identification parameters
-const int MIN_VEHICLE_HEIGHT = 8;
-const int MIN_VEHICLE_WIDTH = 20;
+const int MIN_VEHICLE_HEIGHT = 12;
+const int MIN_VEHICLE_WIDTH = 30;
 const double MIN_VEHICLE_AREA = 150;	
 const double MIN_DETECTABLE_AREA = 50;
 const int MAX_Y_TOLERANCE = 15;

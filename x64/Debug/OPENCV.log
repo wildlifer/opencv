@@ -1,7 +1,7 @@
-﻿Build started 6/11/2016 8:50:21 PM.
+﻿Build started 6/13/2016 5:42:16 PM.
      1>Project "C:\Users\ThreeD\Documents\Visual Studio 2013\Projects\OPENCV\OPENCV\OPENCV.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\opencv\build\include /IC:\opencv\build\include\opencv2 /IC:\opencv\build\include\opencv /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Background_Update_With_Per_Color_Pixel_Updation.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\opencv\build\include /IC:\opencv\build\include\opencv2 /IC:\opencv\build\include\opencv /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Background_Update_With_Per_Color_Pixel_Updation.cpp DE.cpp helper.cpp
          Background_Update_With_Per_Color_Pixel_Updation.cpp
      1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
      1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -16,10 +16,44 @@
      1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(11): warning C4067: unexpected tokens following preprocessor directive - expected a newline
      1>Background_Update_With_Per_Color_Pixel_Updation.cpp(43): warning C4244: 'initializing' : conversion from 'const double' to 'int', possible loss of data
      1>Background_Update_With_Per_Color_Pixel_Updation.cpp(44): warning C4244: 'initializing' : conversion from 'const double' to 'int', possible loss of data
-     1>Background_Update_With_Per_Color_Pixel_Updation.cpp(380): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 Background_Update_With_Per_Color_Pixel_Updation.cpp(262) : definition of 'i' ignored
-                 Background_Update_With_Per_Color_Pixel_Updation.cpp(196) : definition of 'i' used
-     1>Background_Update_With_Per_Color_Pixel_Updation.cpp(122): warning C4101: 'wid' : unreferenced local variable
+     1>Background_Update_With_Per_Color_Pixel_Updation.cpp(128): warning C4101: 'wid' : unreferenced local variable
+         Generating Code...
+         Compiling...
+         helper.cpp
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(7): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(8): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(11): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>helper.cpp(98): warning C4244: 'initializing' : conversion from 'const double' to 'int', possible loss of data
+     1>helper.cpp(99): warning C4244: 'initializing' : conversion from 'const double' to 'int', possible loss of data
+     1>helper.cpp(184): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>helper.cpp(185): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>helper.cpp(517): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+     1>helper.cpp(542): warning C4267: 'initializing' : conversion from 'size_t' to 'const int', possible loss of data
+         DE.cpp
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(7): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(8): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\threed\documents\visual studio 2013\projects\opencv\opencv\helper_cv.h(11): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>DE.cpp(73): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+     1>DE.cpp(156): warning C4267: 'initializing' : conversion from 'size_t' to 'const int', possible loss of data
+     1>DE.cpp(538): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+     1>DE.cpp(798): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ThreeD\Documents\Visual Studio 2013\Projects\OPENCV\x64\Debug\OPENCV.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\opencv\build\x64\vc12\lib opencv_calib3d2410d.lib opencv_contrib2410d.lib opencv_core2410d.lib opencv_features2d2410d.lib opencv_flann2410d.lib opencv_gpu2410d.lib opencv_highgui2410d.lib opencv_imgproc2410d.lib opencv_legacy2410d.lib opencv_ml2410d.lib opencv_nonfree2410d.lib opencv_objdetect2410d.lib opencv_ocl2410d.lib opencv_photo2410d.lib opencv_stitching2410d.lib opencv_superres2410d.lib opencv_ts2410d.lib opencv_video2410d.lib opencv_videostab2410d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ThreeD\Documents\Visual Studio 2013\Projects\OPENCV\x64\Debug\OPENCV.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ThreeD\Documents\Visual Studio 2013\Projects\OPENCV\x64\Debug\OPENCV.lib" /MACHINE:X64 x64\Debug\Background_Update_With_Per_Color_Pixel_Updation.obj
          x64\Debug\CostFunction.obj
@@ -30,4 +64,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.12
+Time Elapsed 00:00:04.93
